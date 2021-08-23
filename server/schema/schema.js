@@ -5,12 +5,13 @@ const {
 	GraphQLSchema,
 	GraphQLID,
 	GraphQLInt,
+	GraphQLList,
 } = graphgl;
 
 let books = [
 	{ name: "Name of the wind", genre: "Fantasy", id: "1", authorId: "1" },
 	{ name: "The final empire", genre: "Fantasy", id: "2", authorId: "2" },
-	{ name: "The long earth", genre: "Sci-Fi", id: "3", authorId: "3" },
+	{ name: "The long earth", genre: "Sci-Fi", id: "3", authorId: "2" },
 ];
 
 let authors = [
@@ -44,6 +45,13 @@ const AuthorType = new GraphQLObjectType({
 		id: { type: GraphQLID },
 		name: { type: GraphQLString },
 		age: { type: GraphQLInt },
+		books: {
+			type: new GraphQLList(BookType),
+			resolve(parent, args) {
+				console.log(parent.id);
+				return books.filter((book) => book.authorId === parent.id);
+			},
+		},
 	}),
 });
 
@@ -62,7 +70,7 @@ const RootQuery = new GraphQLObjectType({
 			type: AuthorType,
 			args: { id: { type: GraphQLID } },
 			resolve(parent, args) {
-				const data = authors.filter((author) => author.id !== args.id);
+				const data = authors.filter((author) => author.id === args.id);
 				return data[0];
 			},
 		},
