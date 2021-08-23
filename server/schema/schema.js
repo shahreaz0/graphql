@@ -9,9 +9,12 @@ const {
 } = graphgl;
 
 let books = [
-	{ name: "Name of the wind", genre: "Fantasy", id: "1", authorId: "1" },
-	{ name: "The final empire", genre: "Fantasy", id: "2", authorId: "2" },
-	{ name: "The long earth", genre: "Sci-Fi", id: "3", authorId: "2" },
+	{ name: "Name of the Wind", genre: "Fantasy", id: "1", authorId: "1" },
+	{ name: "The Final Empire", genre: "Fantasy", id: "2", authorId: "2" },
+	{ name: "The Long Earth", genre: "Sci-Fi", id: "3", authorId: "3" },
+	{ name: "The Hero of Ages", genre: "Fantasy", id: "4", authorId: "2" },
+	{ name: "The Colour of Magic", genre: "Fantasy", id: "5", authorId: "3" },
+	{ name: "The Light Fantastic", genre: "Fantasy", id: "6", authorId: "3" },
 ];
 
 let authors = [
@@ -30,7 +33,7 @@ const BookType = new GraphQLObjectType({
 			type: AuthorType,
 			resolve(parent, args) {
 				const data = authors.filter(
-					(author) => author.id === parent.id
+					(author) => author.id === parent.authorId
 				);
 
 				return data[0];
@@ -48,7 +51,6 @@ const AuthorType = new GraphQLObjectType({
 		books: {
 			type: new GraphQLList(BookType),
 			resolve(parent, args) {
-				console.log(parent.id);
 				return books.filter((book) => book.authorId === parent.id);
 			},
 		},
@@ -72,6 +74,18 @@ const RootQuery = new GraphQLObjectType({
 			resolve(parent, args) {
 				const data = authors.filter((author) => author.id === args.id);
 				return data[0];
+			},
+		},
+		books: {
+			type: new GraphQLList(BookType),
+			resolve(parent, args) {
+				return books;
+			},
+		},
+		authors: {
+			type: new GraphQLList(AuthorType),
+			resolve(parent, args) {
+				return authors;
 			},
 		},
 	},
